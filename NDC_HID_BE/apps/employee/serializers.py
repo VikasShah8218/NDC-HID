@@ -12,7 +12,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             "id", "card_number", "cpf_no", "name", "marks", "address",
             "mobile_no", "phone_landline", "phone_dept", "phone_ext", "blood_group",
             "dob", "level", "email", "date_of_joining", "department_name",
-            "designation", "active", "created_on", "updated_on"
+            "designation", "active", "created_on", "updated_on","photo"
         ]
 
 

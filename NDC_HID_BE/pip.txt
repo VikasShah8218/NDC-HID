@@ -9,3 +9,6 @@ pip install psutil
 pip install pythonnet
 pip install channels
 pip install channels-redis
+pip install pyodbc   ( only data migrations  )
+pip install 
+pip install pillow

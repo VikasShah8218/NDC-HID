@@ -9,7 +9,8 @@ import { Outlet } from "react-router-dom";
 import { logout } from "../../app/slices/authSlice";
 import { useDispatch ,useSelector} from "react-redux";
 import { postToServer } from '../../globals/requests';
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import NDCImage from "../../assets/images/image_01.png"
 
 import "./nav.css"
 
@@ -28,9 +29,9 @@ const Header: React.FC = () => {
       <Toolbar>
         {/* Logo */}
         <Avatar
-          src="https://via.placeholder.com/40" // Replace this URL with your logo image
+          src={NDCImage}
           alt="Logo"
-          sx={{ marginRight: 2 }}
+          sx={{ marginRight: 2, backgroundColor:"white",padding:"5px",alignItems:"center" }}
         />
         {loggedInUser.first_name}
 

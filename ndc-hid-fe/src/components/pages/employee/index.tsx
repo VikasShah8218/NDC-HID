@@ -34,7 +34,7 @@ const Employee: React.FC = () => {
     date_of_joining: "",
     department_name: "",
     designation: "",
-    // photo: null,
+    photo: "",
     // active: false,
   })
 
@@ -296,7 +296,7 @@ const Employee: React.FC = () => {
             </div>
               
             <div className="image-preview">
-                <img src={EmployeeImage} alt="Employee Photo"/>
+                <img src={ formData.photo?`data:image/jpeg;base64,${formData.photo}`:EmployeeImage} alt="Employee Photo"/>
             </div>
 
             <button>RESET</button>
@@ -317,13 +317,13 @@ const Employee: React.FC = () => {
                       <th>DOJ</th>
                       <th>DEPARTMENT</th>
                       <th>DESIGNATION</th>
-                      <th>Action</th>
+                      {/* <th>Action</th> */}
                   </tr>
               </thead>
               <tbody>
                 {employees.map((emp, i) =>
-                  <tr>
-                      <td className="table-img" ><img src={EmployeeImage} alt="Photo" width="50" /></td>
+                  <tr  onClick={() => showDetails(i)}>
+                      <td className="table-img" ><img src={ emp.photo?`data:image/jpeg;base64,${emp.photo}`:EmployeeImage} alt="Photo" width="50" /></td>
                       <td>{emp.name}</td>
                       <td>{emp.card_number}</td>
                       <td>{emp. cpf_no}</td>
@@ -332,7 +332,7 @@ const Employee: React.FC = () => {
                       <td>{emp.dob}</td>
                       <td>{emp.department_name}</td>
                       <td>{emp.designation}</td>
-                      <td><button onClick={() => showDetails(i)}>👁️</button></td>
+                      {/* <td><button onClick={() => showDetails(i)}>👁️</button></td> */}
                   </tr>
                   )}
               </tbody>

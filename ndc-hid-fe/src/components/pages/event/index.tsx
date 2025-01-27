@@ -38,7 +38,7 @@ const EmployeeEventDetails: React.FC = () => {
             <div className="section-01">
 
             <div className="employee-image">
-                <img src={NDCImage} />
+                <img src={ wsMessage?.employee?.photo?`data:image/jpeg;base64,${wsMessage.employee.photo}`:NDCImage} />
             </div>
             <div className="employee-details">
                 <h3>Employee Details</h3>   

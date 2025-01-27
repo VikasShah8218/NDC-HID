@@ -612,7 +612,7 @@ def scp_reply_transaction(message:SCPReplyMessage,SCPID:int):
             tran_code = "12 Request granted: full test, not used"
         
         elif data_status['tran_code'] == 13:
-            tran_code = "13 Request granted: Full Test, Used"
+            tran_code = "Request granted: Full Test, Used"
             validate_event(int(SCPID),int(data["cardholder_id"]),int(message.tran.source_number) if (int(data_status["source_type"])==9) else None)
         
         elif data_status['tran_code'] == 14:

@@ -32,7 +32,7 @@ class Employee(models.Model):
         return self.name
     
     card = models.ForeignKey(Card, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_card" ) 
-    cpf_no = models.CharField(max_length=255, null=True, blank=True)  # EMP_CPFNo
+    cpf_no = models.CharField(max_length=255, null=True, blank=True,unique=True)  # EMP_CPFNo
     name = models.CharField(max_length=255, null=True, blank=True)  # EMP_NAME
     marks = models.TextField(null=True, blank=True)  # EMP_ID_MARKS
     address = models.TextField(null=True, blank=True)  # EMP_ADDR_PAR
@@ -47,7 +47,7 @@ class Employee(models.Model):
     date_of_joining = models.DateField(null=True, blank=True)  # EMP_DOJ
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_department" ) 
     designation = models.CharField(max_length=255, null=True, blank=True)  # EMP_DESG
-    photo = models.BinaryField(null=True, blank=True)  # EMP_PHOTO (stored as binary data)
+    photo = models.TextField(null=True, blank=True) 
     active = models.BooleanField(default=True)  # ACTIVE
     created_on = models.DateTimeField(auto_now_add=True)  # CREATED_ON
     updated_on = models.DateTimeField(auto_now=True)  # UPDATED_ON
@@ -299,3 +299,46 @@ def populate_employees(csv_file_path="old_database/employee.csv"):
 
     except Exception as e:
         print(f"Error occurred: {e}")
+
+
+
+def photo_migrations():
+    import pyodbc
+    import base64
+    from PIL import Image
+    import io
+    import time
+    connection_string = (
+    "Driver={SQL Server};"
+    "Server=MR-SHAH\\SQLEXPRESS;"
+    "Database=HIDData;"
+    "Trusted_Connection=yes;"
+    )
+    skip_ids = {4, 6, 8, 11, 12, 14, 16, 20, 21, 22, 23, 27, 30, 32, 37, 40, 41, 44, 45, 47, 48, 49, 51, 52, 54, 55, 63, 64, 66, 68, 75, 86, 87, 88, 89, 90, 91, 97, 98, 100, 102, 106, 114, 133, 134, 135, 169, 170, 273, 288, 289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 301, 303, 304, 306, 322, 323, 325, 326, 327, 336, 337, 338, 339, 341, 345, 346, 348, 350, 351, 353, 361, 362, 363, 364, 365, 368, 369, 370, 371, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394}
+        
+    def fetch_and_show_image():
+        try:
+            conn = pyodbc.connect(connection_string)
+            cursor = conn.cursor()
+            query =  '''SELECT 
+            [EMP_ID] , [EMP_PHOTO], [EMP_CPFNo] FROM [HIDData].[dbo].[tblEmployeeInfo]'''
+            
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            for row in rows:
+                if int(row[0]) in skip_ids:continue
+                if row[1]:
+                    binary_data = row[1]
+                    base64_data = base64.b64encode(binary_data).decode('utf-8')
+                    try:
+                        Employee.objects.filter(cpf_no = row[2]).update(photo=base64_data)
+                        print(f"Photo Migrated {row[0]}")
+                    except Exception as e:
+                        print("-"*10,str(e),"-"*10)
+                else:
+                    print(f"No photo found for employee ID {row[0]}.")
+            conn.close()
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    fetch_and_show_image()

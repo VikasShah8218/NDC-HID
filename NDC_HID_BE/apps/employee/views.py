@@ -48,7 +48,7 @@ def validate_event(scp_number:int,card_number:int,acr_number:int):
             "reader":HIDReaderListSerializer(HIDReader.objects.get(acr_number=acr_number)).data,
             "time":now().isoformat()
             }}
-        print(data)
+        # print(data)
         send_message(data)
         return data
     except Card.DoesNotExist:
