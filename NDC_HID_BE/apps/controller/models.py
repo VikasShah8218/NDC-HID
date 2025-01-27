@@ -33,3 +33,4 @@ class HIDReader(models.Model):
         db_table = 'HID_Reader'
     name = models.CharField(max_length=255)
     acr_number = models.IntegerField(unique=True)
+    location = models.CharField(max_length=255,null=True,blank=True)

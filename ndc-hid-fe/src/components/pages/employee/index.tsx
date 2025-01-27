@@ -1,12 +1,9 @@
-import React, {useEffect, useState, useRef}  from "react";
-import { Box, TextField, Typography, Select, MenuItem, Button, Avatar,} from "@mui/material";
-import { InputText } from "primereact/inputtext";
+import React, {useEffect, useState}  from "react";
 import EmployeeImage from "../../../assets/images/image_01.png"
 import { getFromServer } from "../../../globals/requests";
 import "./emp.css"
 
 const Employee: React.FC = () => {
-  const [globalFilter, setGlobalFilter] = useState<string | null>(null);
   const [employees,setEmployees] = useState<any[]>([]);
   const getEmployees = async()=> {
     const resTasks = await getFromServer("/employee");
@@ -14,25 +11,6 @@ const Employee: React.FC = () => {
       setEmployees(resTasks.data.results)
     }
     }
-
-  const renderHeader = () => {
-    return (
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <h2 className="m-0">Employee List</h2>
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            type="search"
-            placeholder="Search Employees"
-            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setGlobalFilter(e.target.value)
-            }
-          />
-        </span>
-      </div>
-    );
-  };
-  const header = renderHeader();
 
   useEffect(()=>{
     getEmployees();
@@ -70,58 +48,8 @@ const Employee: React.FC = () => {
   
 
   return (
-    <Box sx={{ display: "flex", padding: "8px 16px 16px 16px", backgroundColor: "#f4f4f4" }}>
-      {/* Sidebar */}
-      {/* <Box sx={{flex: 1,padding: "8px",backgroundColor: "#eaeaea", borderRight: "1px solid #ccc", }}>
-        <Typography variant="h6" sx={{ gridColumn: "span 2", textAlign: "center", marginBottom: "10px", fontSize: "1rem" }}>
-          Employee Information
-        </Typography>
-
-        <div className="form-details" style={{display: "grid",gridTemplateColumns: "1fr 1fr",gap: "8px", marginBottom:"20px",paddingTop:"10px", height:"55vh",overflow:"auto"}}>
-          <TextField label="Card No." name="card_number" value={formData.card_number} onChange={changeField} />
-          <TextField label="Name" />
-          <TextField label="CPF No." />
-          <TextField label="Date of Birth" defaultValue="25/06/1975" />
-          <Select defaultValue="b+" size="small" >
-            <MenuItem value="b+">B+</MenuItem>
-          </Select>
-          <TextField label="Date of Joining" defaultValue="01/01/2012"  />
-          <Select defaultValue="mts" size="small">
-            <MenuItem value="mts">MTS</MenuItem>
-          </Select>
-          <TextField label="Level" defaultValue="SDS (Navy)"  />
-          <TextField label="Department"  defaultValue="Civil"      />
-          <TextField label="Dept. Phone No." defaultValue="23012131"   />
-          <TextField label="Mobile No." defaultValue="9711079590" />
-          <TextField label="Dept. Phone No." defaultValue="23012131"   />
-          <TextField label="Mobile No." defaultValue="9711079590" />
-          <TextField label="Dept. Phone No." defaultValue="23012131"   />
-          <TextField label="Mobile No." defaultValue="9711079590" />
-          <TextField label="Dept. Phone No." defaultValue="23012131"   />
-          <TextField label="Mobile No." defaultValue="9711079590" />
-          <TextField label="Dept. Phone No." defaultValue="23012131"   />
-          <TextField label="Mobile No." defaultValue="9711079590" />
-          <TextField label="Dept. Phone No." defaultValue="23012131"   />
-          <TextField label="Mobile No." defaultValue="9711079590" />
-        </div>
-
-        <Box sx={{gridColumn: "span 2",display: "flex",justifyContent: "center",alignItems: "center",}}>
-          <Avatar src="https://via.placeholder.com/100" alt="Employee"sx={{width: 100,height: 100,border: "1px solid #ccc"}}/>
-        </Box>
-
-        <Box sx={{gridColumn: "span 2", display: "flex", justifyContent: "space-between", gap: "8px", }}>
-          <Button variant="contained" size="small" color="info">
-            RESET
-          </Button>
-          <Button variant="contained" size="small" color="success">
-            SAVE
-          </Button>
-          <Button variant="contained" size="small" color="error">
-            DELETE   
-          </Button>
-        </Box>
-      </Box>   */}
-      <div className="sidebar">
+      <div style={{ display: "flex", padding: "8px 16px 16px 16px", backgroundColor: "#f4f4f4" }} >
+        <div className="sidebar">
             <div className="sidebar-heading">
                 <h3>Employee Information</h3>
             </div>
@@ -375,10 +303,7 @@ const Employee: React.FC = () => {
             <button>SAVE</button>
             <button>DELETE</button>
         </div>
-
-
-      {/* Content */}
-      <Box sx={{ flex: 3, paddingLeft: "16px" }}>
+        <div style={{flex:"3",paddingLeft:"16px"}} >
         <div className="emp-table" style={{maxHeight:"80vh", overflow:"auto"}} >
           <table>
               <thead>
@@ -413,8 +338,8 @@ const Employee: React.FC = () => {
               </tbody>
           </table>
         </div>
-      </Box>
-    </Box>
+        </div>
+        </div>
   );
 };
 

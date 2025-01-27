@@ -150,25 +150,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
 
-Q_CLUSTER = {
-    'name': 'Django Q',
-    'workers': 4,  # You can increase or decrease workers based on your CPU core count
-    'timeout': 60,
-    'recycle': 500,
-    'save_limit': 250,
-    'queue_limit': 50,
-    'cpu_affinity': 1,
-    'label': 'Django Q Cluster',
-    'redis': {
-        'host': '127.0.0.1',
-        'port': 6379,
-        'db': 0,
-        'password': None,  # You can configure Redis password if needed
-        'default_timeout': 3600,
-    }
-}
-
-
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND =  'redis://127.0.0.1:6379/1'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
@@ -178,3 +159,12 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = TIME_ZONE
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

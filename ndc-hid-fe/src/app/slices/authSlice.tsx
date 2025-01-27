@@ -9,6 +9,7 @@ export const authSlice = createSlice({
     authenticated: checkInitialAuth(),
     user: loadUserInfo(),
     requestLoading : false,
+    wsMessage: null,
   },
   reducers: {
     login: (state, action) => {
@@ -23,11 +24,14 @@ export const authSlice = createSlice({
     },
     setRequestLoading:(state,action) =>{
       state.requestLoading = action.payload
-    }
+    },
+    setWsMessage: (state, action) => {
+      state.wsMessage = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { login, logout, setRequestLoading } = authSlice.actions;
+export const { login, logout, setRequestLoading, setWsMessage } = authSlice.actions;
 
 export default authSlice.reducer;

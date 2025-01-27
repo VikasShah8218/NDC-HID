@@ -3,16 +3,18 @@ import json
 
 class MyWebSocketConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        await self.channel_layer.group_add("broadcast_group", self.channel_name)
         await self.accept()
-        await self.send(text_data=json.dumps({
-            "message": "WebSocket connected!"
-        }))
 
     async def disconnect(self, close_code):
-        print("WebSocket disconnected!")
+        await self.channel_layer.group_discard("broadcast_group",self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        await self.send(text_data=json.dumps({
-            "message": f"Message received: {data['message']}"
-        }))
+        print("Received message:", data)
+
+    async def send_message(self, event):
+        message = event["message"]
+        await self.send(text_data=json.dumps({"message": message}))
+
+

@@ -1,6 +1,6 @@
+from ndc.celery import get_task_status, stop_task
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ndc.celery import get_task_status, stop_task
 from .tasks import test
 
 class Test(APIView):
@@ -21,5 +21,4 @@ class CeleryStop(APIView):
     def get(self,request,task_id):
         data = stop_task(task_id)
         return Response({"data":data},status = 200)
-    
     

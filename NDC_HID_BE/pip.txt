@@ -8,3 +8,4 @@ pip install redis
 pip install psutil
 pip install pythonnet
 pip install channels
+pip install channels-redis

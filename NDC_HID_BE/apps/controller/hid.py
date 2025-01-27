@@ -5,6 +5,7 @@ import time
 from HID.Aero.ScpdNet.Wrapper import SCPDLL, SCPConfig , SCPReplyMessage 
 
 from .models import Controller
+from apps.employee.views import validate_event
 
 SOURCE_TYPE = {
     0: "SCP diagnostics",
@@ -612,6 +613,7 @@ def scp_reply_transaction(message:SCPReplyMessage,SCPID:int):
         
         elif data_status['tran_code'] == 13:
             tran_code = "13 Request granted: Full Test, Used"
+            validate_event(int(SCPID),int(data["cardholder_id"]),int(message.tran.source_number) if (int(data_status["source_type"])==9) else None)
         
         elif data_status['tran_code'] == 14:
             tran_code = "14 Request denied: never allowed at this reader (all Tz's = 0)"

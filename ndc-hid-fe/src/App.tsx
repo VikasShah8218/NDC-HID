@@ -1,9 +1,17 @@
+import React , { useEffect } from "react";
+import { initializeWebSocket } from "./wsConnection";
 import MainApp from "./MainApp"
 
-function App() {
+const App: React.FC = () => {
+  useEffect(() => {
+    const ws:any = initializeWebSocket();
+    return () => {
+      ws.close();
+    };
+  }, []);
   return (
     <>
-        <MainApp />
+      <MainApp />
     </>
   )
 }
