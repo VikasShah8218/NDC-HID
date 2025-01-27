@@ -1,0 +1,77 @@
+  .controller-page {
+    display: flex;
+    height: 80vh;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  /* Left Section */
+  .controller-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
+  }
+  
+  .controller-card {
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background-color: #0057B7;
+    border-radius: 10px;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    transition: transform 0.3s ease-in-out;
+    color: white;
+  }
+  
+  .controller-card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Right Section */
+  .controller-info {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .controller-info p {
+    font-size: 18px;
+    color: #666;
+  }
+  
+
+  .controller-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .controller-card .hid-image {
+    width: 130px;
+  }
+
+  .controller-card .hid-image img {
+    width: 100%;
+  }
+
+  .hid-details{
+    display: flex;
+    flex-direction: column;
+  }
+  .hid-details .hid-detail{
+    display: flex;
+    height: 20px;
+    /* flex-direction: column; */
+  }
