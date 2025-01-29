@@ -2,82 +2,96 @@ import React, {useEffect, useState}  from "react";
 import EmployeeImage from "../../../assets/images/image_01.png"
 import { getFromServer } from "../../../globals/requests";
 import "./emp.css"
+import { BASE_URL } from "../../../globals/requests";
 
 const Employee: React.FC = () => {
-  const [employees,setEmployees] = useState<any[]>([]);
-  const getEmployees = async()=> {
-    const resTasks = await getFromServer("/employee");
-    if (resTasks.status){
-      setEmployees(resTasks.data.results)
+    const emptyFormData = {
+      id: null,
+      card_number: "",
+      card_id: "",
+      cpf_no: "",
+      name: "",
+      marks: "",
+      address: "",
+      mobile_no: "",
+      phone_landline: "",
+      phone_dept: "",
+      phone_ext: "",
+      blood_group: "",
+      dob: "",
+      level: "",
+      email: "",
+      date_of_joining: "",
+      department_name: "",
+      designation: "",
+      photo: "",
+      active: null,
+      is_photo:false
     }
+
+    const [employees,setEmployees] = useState<any[]>([]);
+    const [cards,setCards] = useState<any[]>([]);
+    const [formData, setFormData] = useState({...emptyFormData})
+
+    const showDetails = (i: number) => setFormData(employees[i]);
+
+    const getEmployees = async()=> {
+        const response = await getFromServer("/employee");
+        if (response.status){setEmployees(response.data)}
     }
-
-  useEffect(()=>{
-    getEmployees();
-  },[])
-
-  const [formData, setFormData] = useState({
-    id: null,
-    card_number: "",
-    cpf_no: "",
-    name: "",
-    marks: "",
-    address: "",
-    mobile_no: "",
-    phone_landline: "",
-    phone_dept: "",
-    phone_ext: "",
-    blood_group: "",
-    dob: "",
-    level: "",
-    email: "",
-    date_of_joining: "",
-    department_name: "",
-    designation: "",
-    photo: "",
-    // active: false,
-  })
-
-  const showDetails = (i: number) => setFormData(employees[i]);
-  const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [event.target.name]: event.target.value,
-    }));
-  }
-  
-
+    const getCard = async()=> {
+        const response = await getFromServer("/controller/cards");
+        if (response.status){setCards(response.data)}
+    }
+   const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
+       setFormData((prevFormData) => ({
+           ...prevFormData,
+           [event.target.name]: event.target.value,
+        }));
+    }
+   
+    const saveData = () =>{console.log(formData)}
+    useEffect(()=>{getEmployees();getCard();},[])
+    
+    
   return (
-      <div style={{ display: "flex", padding: "8px 16px 16px 16px", backgroundColor: "#f4f4f4" }} >
+    <div style={{ display: "flex", padding: "8px 16px 16px 16px", backgroundColor: "#f4f4f4" }} >
         <div className="sidebar">
             <div className="sidebar-heading">
                 <h3>Employee Information</h3>
             </div>
             <div className="form-elements-groups">
-            <div className="form-element">
+            {/* <div className="form-element">
                 <label htmlFor="cardNo">Card No.:</label>
                 <input type="text" id="cardNo" value={formData.card_number} onChange={changeField}/>
+            </div> */}
+            <div className="form-element">
+                <label htmlFor="cards">Card:</label>
+                <select id="cards" name="card_id" value={formData.card_id} onChange={changeField} >
+                    {cards.map((card, i) => 
+                        <option key={i} value={card?.id}>{card?.card_number}</option>
+                    )}
+                </select>
             </div>
             
             <div className="form-element">
                 <label htmlFor="name">Name:</label>
-                <input type="text" id="name" value={formData.name}/>
+                <input type="text" id="name" value={formData.name} name="name" onChange={changeField}/>
             </div>
             
             <div className="form-element">  
                 <label htmlFor="cpfNo">CPF No :</label>
-                <input type="text" id="cpfNo" value={formData.cpf_no}/>
+                <input type="text" id="cpfNo" value={formData.cpf_no}  name="cpf_no" onChange={changeField}/>
             </div>
             
             <div className="form-element">
                 <label htmlFor="dob">Date of Birth :</label>
-                <input type="text" id="dob" value={formData.dob}/>
+                <input type="text" id="dob" value={formData.dob}  name="dob" onChange={changeField}/>
             </div>
             
             <div className="form-element">
                 <label htmlFor="bloodGroup">Blood Group:</label>
-                <select id="bloodGroup">
-                    <option value={formData.blood_group} selected>{formData.blood_group}</option>
+                <select id="bloodGroup" value={formData.blood_group}  name="blood_group" onChange={changeField}>
                     <option value="A+">A+</option>
                     <option value="A-">A-</option>
                     <option value="B+">B+</option>
@@ -91,12 +105,11 @@ const Employee: React.FC = () => {
             
             <div className="form-element">
                 <label htmlFor="doj">Date of Joining :</label>
-                <input type="text" id="doj" value={formData.date_of_joining}/>
+                <input type="text" id="doj" value={formData.date_of_joining} name="date_of_joining" onChange={changeField}/>
             </div>
             <div className="form-element">
                 <label htmlFor="designation">Designation :</label>
-                <select id="designation">
-                    <option value={formData.designation} selected>{formData.designation}</option>
+                <select id="designation" value={formData.designation} name="designation" onChange={changeField}>
                     <option value="DGM">DGM</option>
                     <option value="SOFTWARE ENGG.">SOFTWARE ENGG.</option>
                     <option value="Corporal">Corporal</option>
@@ -263,44 +276,165 @@ const Employee: React.FC = () => {
             
             <div className="form-element">
                 <label htmlFor="level">Level:</label>
-                <select id="designation">
-                <option value={formData.level} selected>{formData.level}</option>
+                <select id="designation" value={formData.level} name="level" onChange={changeField}>
+                    <option value="MTS">MTS</option>
+                    <option value="WG CDR">WG CDR</option>
+                    <option value="SEA-I">SEA-I</option>
+                    <option value="POAOF">POAOF</option>
+                    <option value="LAM">LAM</option>
+                    <option value="Joint Secretry">Joint Secretry</option>
+                    <option value="SO(A)">SO(A)</option>
+                    <option value="FGM">FGM</option>
+                    <option value="LT COL">LT COL</option>
+                    <option value="CAPT(IN)">CAPT(IN)</option>
+                    <option value="ELECT(HS)">ELECT(HS)</option>
+                    <option value="NB Sub">NB Sub</option>
+                    <option value="ELECT(MCM)">ELECT(MCM)</option>
+                    <option value="FGM(MCM)">FGM(MCM)</option>
+                    <option value="Elericon">Elericon</option>
+                    <option value="FGM MCM">FGM MCM</option>
+                    <option value="MATE(SSK)">MATE(SSK)</option>
+                    <option value="MES">MES</option>
+                    <option value="Cleark">Cleark</option>
+                    <option value="PPS">PPS</option>
+                    <option value="SERGENT">SERGENT</option>
+                    <option value="GNR(GD)">GNR(GD)</option>
+                    <option value="POAF">POAF</option>
+                    <option value="Staff Captain">Staff Captain</option>
+                    <option value="ITS">ITS</option>
+                    <option value="Indian Coast Guard">Indian Coast Guard</option>
+                    <option value="IDAS">IDAS</option>
+                    <option value="IDES">IDES</option>
+                    <option value="IP&TAFS">IP&TAFS</option>
+                    <option value="IFoS">IFoS</option>
+                    <option value="IRSS">IRSS</option>
+                    <option value="AFHQ-CS">AFHQ-CS</option>
+                    <option value="DRDS">DRDS</option>
+                    <option value="IAS">IAS</option>
+                    <option value="OR MESS">OR MESS</option>
+                    <option value="COMDT SECTT">COMDT SECTT</option>
+                    <option value="OCC">OCC</option>
+                    <option value="WO">WO</option>
+                    <option value="JWO">JWO</option>
+                    <option value="MCPOLOG(STD) II">MCPOLOG(STD) II</option>
+                    <option value="LNK">LNK</option>
+                    <option value="LS GS II">LS GS II</option>
+                    <option value="SDS(Army II)">SDS(Army II)</option>
+                    <option value="SKT">SKT</option>
+                    <option value="NDC House">NDC House</option>
+                    <option value="NDC OR Mess">NDC OR Mess</option>
+                    <option value="SDS(CS)">SDS(CS)</option>
+                    <option value="NDC Vet Canteen">NDC Vet Canteen</option>
+                    <option value="NDC Off. Mess">NDC Off. Mess</option>
+                    <option value="NDC Reception">NDC Reception</option>
+                    <option value="NDC Library">NDC Library</option>
+                    <option value="Univ Div">Univ Div</option>
+                    <option value="Control Room">Control Room</option>
+                    <option value="SDS(Navy)">SDS(Navy)</option>
+                    <option value="GSO Systems">GSO Systems</option>
+                    <option value="SDS(Air)">SDS(Air)</option>
+                    <option value="RB">RB</option>
+                    <option value="SDS(Army-III)">SDS(Army-III)</option>
+                    <option value="SDS(FS)">SDS(FS)</option>
+                    <option value="JDS Adm">JDS Adm</option>
+                    <option value="SDS (Navy)">SDS (Navy)</option>
+                    <option value="Secretary">Secretary</option>
+                    <option value="DAA&QMG">DAA&QMG</option>
+                    <option value="MI Room">MI Room</option>
+                    <option value="DS Coord">DS Coord</option>
+                    <option value="Dak Room">Dak Room</option>
+                    <option value="AQ Sectt">AQ Sectt</option>
+                    <option value="Accts">Accts</option>
+                    <option value="SDS (Army-I)">SDS (Army-I)</option>
+                    <option value="Commandant">Commandant</option>
+                    <option value="Sweaper">Sweaper</option>
+                    <option value="MT">MT</option>
+                    <option value="JOINT SECRETARY">JOINT SECRETARY</option>
+                    <option value="COL STAFF">COL STAFF</option>
+                    <option value="CAPTAIN(IN)">CAPTAIN(IN)</option>
+                    <option value="GNR(RST)">GNR(RST)</option>
+                    <option value="MCPO II">MCPO II</option>
+                    <option value="CHM">CHM</option>
+                    <option value="SAG">SAG</option>
+                    <option value="JT. Secy">JT. Secy</option>
+                    <option value="JS(MEA)">JS(MEA)</option>
+                    <option value="GD">GD</option>
+                    <option value="CMDE">CMDE</option>
+                    <option value="R & D">R & D</option>
+                    <option value="DIRECTOR">DIRECTOR</option>
+                    <option value="Research Coord">Research Coord</option>
+                    <option value="CHIF">CHIF</option>
+                    <option value="DIG">DIG</option>
+                    <option value="Jt. Sec">Jt. Sec</option>
+                    <option value="IG">IG</option>
+                    <option value="IPS">IPS</option>
+                    <option value="IRS">IRS</option>
+                    <option value="JS">JS</option>
+                    <option value="AIR CMDE">AIR CMDE</option>
+                    <option value="CMDE NM">CMDE NM</option>
+                    <option value="BRIG">BRIG</option>
+                    <option value="N/A">N/A</option>
+                    <option value="MAJ">MAJ</option>
+                    <option value="LT GEN">LT GEN</option>
+                    <option value="SUB(PA)">SUB(PA)</option>
+                    <option value="CFN">CFN</option>
+                    <option value="SAPEER">SAPEER</option>
+                    <option value="MWO">MWO</option>
+                    <option value="RFN">RFN</option>
+                    <option value="PO GSI">PO GSI</option>
+                    <option value="PO LOG(F&A)">PO LOG(F&A)</option>
+                    <option value="LEMP">LEMP</option>
+                    <option value="PO LOG(OC)">PO LOG(OC)</option>
+                    <option value="Ms.">Ms.</option>
+                    <option value="L LOG(OC)">L LOG(OC)</option>
+                    <option value="PTR">PTR</option>
+                    <option value="SUB">SUB</option>
+                    <option value="DAFTRY">DAFTRY</option>
+                    <option value="LA(AH)">LA(AH)</option>
+                    <option value="L LOG(F&A)">L LOG(F&A)</option>
+                    <option value="Grop-c">Grop-c</option>
+                    <option value="CPO WTR">CPO WTR</option>
+                    <option value="LH">LH</option>
+                    <option value="POELA">POELA</option>
+                    <option value="JSA">JSA</option>
+                    <option value="PO">PO</option>
+                    <option value="L LOG">L LOG</option>
                 </select>
             </div>
             
             <div className="form-element">
                 <label htmlFor="department">Department:</label>
-                <input type="text" id="department" disabled value={formData.department_name}/>
+                <input type="text" id="department" disabled value={formData.department_name}  name="department_name" onChange={changeField}/>
             </div>
             
             <div className="form-element">
                 <label htmlFor="phone">Dept. Phone No.:</label>
-                <input type="text" id="phone" value={formData.phone_dept}/>
+                <input type="text" id="phone" value={formData.phone_dept}  name="phone_dept" onChange={changeField}/>
             </div>
             
             <div className="form-element">
                 <label htmlFor="mobile">Mobile No.:</label>
-                <input type="text" id="mobile" value={formData.mobile_no}/>
+                <input type="text" value={formData.mobile_no}  name="mobile_no" onChange={changeField}/>
             </div>
 
             <div className="form-element">
                 <label htmlFor="mobile">Address :</label>
-                <input type="text" id="mobile" value={formData.address}/>
+                <input type="text" value={formData.address}  name="address" onChange={changeField}/>
             </div>
 
             <div className="form-element">
                 <label htmlFor="mobile">Visible ID Marks.:</label>
-                <input type="text" id="mobile" value={formData.marks}/>
+                <input type="text" value={formData.marks}  name="marks" onChange={changeField}/>
             </div>
             
             </div>
               
             <div className="image-preview">
-                <img src={ formData.photo?`data:image/jpeg;base64,${formData.photo}`:EmployeeImage} alt="Employee Photo"/>
+                <img src={formData?.is_photo?`${BASE_URL}/employee/emp-img/${formData.id}`:EmployeeImage} alt="Employee Photo"/>
             </div>
 
-            <button>RESET</button>
-            <button>SAVE</button>
+            <button onClick={()=>setFormData({...emptyFormData})} >RESET</button>
+            <button onClick={saveData} >SAVE</button>
             <button>DELETE</button>
         </div>
         <div style={{flex:"3",paddingLeft:"16px"}} >
@@ -321,10 +455,10 @@ const Employee: React.FC = () => {
                   </tr>
               </thead>
               <tbody>
-                {employees.map((emp, i) =>
+                {employees?.map((emp, i) =>
                   <tr  onClick={() => showDetails(i)}>
-                      <td className="table-img" ><img src={ emp.photo?`data:image/jpeg;base64,${emp.photo}`:EmployeeImage} alt="Photo" width="50" /></td>
-                      <td>{emp.name}</td>
+                      <td className="table-img" ><img src={ emp?.is_photo?`${BASE_URL}/employee/emp-img/${emp.id}`:EmployeeImage} alt="Photo" width="50" /></td>
+                      <td>{emp.card_id}</td>
                       <td>{emp.card_number}</td>
                       <td>{emp. cpf_no}</td>
                       <td>{emp.mobile_no}</td>
@@ -339,7 +473,7 @@ const Employee: React.FC = () => {
           </table>
         </div>
         </div>
-        </div>
+    </div>
   );
 };
 

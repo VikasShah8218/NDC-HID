@@ -77,7 +77,7 @@ const Header: React.FC = () => {
     <div className="navigation-bar">
       <div className="nag-button" onClick={()=>{navigate("/list")}} >Home</div>
       <div className="nag-button" onClick={()=>{navigate("")}} >New Entry</div>
-      <div className="nag-button" onClick={()=>{navigate("")}} >Reports</div>
+      <div className="nag-button" onClick={()=>{navigate("/report")}} >Reports</div>
       <div className="nag-button" onClick={()=>{navigate("/event")}} >Events</div>
       <div className="nag-button" onClick={()=>{navigate("/controller")}} >Controller Settings</div>
     </div>

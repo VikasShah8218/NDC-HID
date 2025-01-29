@@ -1,5 +1,7 @@
 from django.db import models
-from apps.controller.models import Card
+from apps.controller.models import Card, HIDReader
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import make_aware
 
 
 class Department(models.Model):
@@ -52,6 +54,18 @@ class Employee(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)  # CREATED_ON
     updated_on = models.DateTimeField(auto_now=True)  # UPDATED_ON
 
+
+class EmployeeLog(models.Model):
+    class Meta:
+        db_table = "EmployeeLog"
+
+    def __str__(self):
+        return self.name
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_log") 
+    card = models.ForeignKey(Card, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_log_card" ) 
+    reader = models.ForeignKey(HIDReader, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_log_reader" ) 
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    # active = models.BooleanField(default=True)
 
     
 
@@ -342,3 +356,78 @@ def photo_migrations():
             print(f"Error: {e}")
     
     fetch_and_show_image()
+
+
+def employee_ctreation_date():
+    import pyodbc
+    connection_string = (
+        "Driver={SQL Server};"
+        "Server=MR-SHAH\\SQLEXPRESS;"
+        "Database=HIDData;"
+        "Trusted_Connection=yes;"
+        )
+    def migrate():
+        try:
+            conn = pyodbc.connect(connection_string)
+            cursor = conn.cursor()
+            query =  '''SELECT [EMP_CPFNo], [CREATED_ON], [UPDATED_ON] FROM [HIDData].[dbo].[tblEmployeeInfo]'''
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            count = 0
+            for row in rows:
+                try:
+                    print(row[1],"  " ,row[2])
+                    created_on = make_aware(parse_datetime(str(row[1])))
+                    updated_on = make_aware(parse_datetime(str(row[2])))
+                    Employee.objects.filter(cpf_no = row[0]).update(created_on=created_on,updated_on=updated_on)
+                    print(f"Migrated {count}  {row[0]}")
+                    count+=1
+                except Exception as e:
+                    print("-"*10,str(e),"-"*10)
+                # break
+        except Exception as e :
+            print("Some thing went wrong: ",str(e))
+    migrate()
+# from apps.employee.models import *
+
+
+def employee_in_out_record():
+    import pyodbc
+    connection_string = (
+        "Driver={SQL Server};"
+        "Server=MR-SHAH\\SQLEXPRESS;"
+        "Database=HIDData;"
+        "Trusted_Connection=yes;"
+        )
+    def migrate():
+        try:
+            conn = pyodbc.connect(connection_string)
+            cursor = conn.cursor()
+            query =  '''SELECT [HID_EmployeeHIDcardNO], [EntryDateTime], [Reader_Id],[Active] FROM [HIDData].[dbo].[HID_EmployeeEntryExit]'''
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            count = 0
+            for row in rows:
+                try:
+                    # print(row[0])
+                    card = Card.objects.get(card_number = row[0])
+                    created_o = make_aware(parse_datetime(str(row[1])))
+                    reader = HIDReader.objects.get(id = row[2])
+                    employee = Employee.objects.get(card_id = card.id, active= True)
+                    # print("==> ",card.card_number," ",created_on," ", reader.name," ", employee.name)
+                    EmployeeLog.objects.create(employee = employee, card = card,created_on=created_o,reader=reader,active= True if (row[3]=="1") else False)
+                    print("EMP => ", count )
+                    count+=1
+                except Card.DoesNotExist as e:
+                    print("-"*10,str("Card Not Found"),"-"*10)
+                    continue
+                except Employee.DoesNotExist as e:
+                    print("-"*10,str("Employee Not Found"),"-"*10)
+                    continue
+                except Exception as e:
+                    print("Wrong => ",str(e))
+                    continue
+                # break
+        except Exception as e :
+            print("Some thing went wrong: ",str(e))
+    migrate()

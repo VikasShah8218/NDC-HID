@@ -5,6 +5,7 @@ import SignIn from "./components/pages/authentication/SignIn"
 import Header from "./components/layouts/Header";
 import Controller from "./components/pages/controller";
 import EmployeeEventDetails from "./components/pages/event";
+import EventReport from "./components/pages/reports/EventReport";
 
 const MainApp = () => {
   const authenticated = useSelector((state:any) => state.auth.authenticated);
@@ -29,6 +30,10 @@ const MainApp = () => {
         {
           path: "event",
           element:<EmployeeEventDetails/>,
+        },
+        {
+          path: "report",
+          element:<EventReport/>,
         }
       ],
       loader: async () => (authenticated ? null : redirect("/login")),

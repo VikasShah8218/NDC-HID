@@ -1,19 +1,23 @@
 from rest_framework import serializers
-from .models import Employee
+from .models import Employee,EmployeeLog
 
 # Serializer for GET operations
 class EmployeeListSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True)
     card_number = serializers.CharField(source="card.card_number", read_only=True)
+    is_photo = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee
         fields = [
-            "id", "card_number", "cpf_no", "name", "marks", "address",
+            "id", "card_number","card_id", "cpf_no", "name", "marks", "address",
             "mobile_no", "phone_landline", "phone_dept", "phone_ext", "blood_group",
             "dob", "level", "email", "date_of_joining", "department_name",
-            "designation", "active", "created_on", "updated_on","photo"
+            "designation", "active", "created_on", "updated_on","is_photo"
+            # "photo"
         ]
+    def get_is_photo(self,obj):
+        return True if obj.photo else False
 
 
 # Serializer for CREATE and UPDATE operations
@@ -25,3 +29,24 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
             "phone_landline", "phone_dept", "phone_ext", "blood_group", "dob",
             "level", "email", "date_of_joining", "department", "designation", "photo", "active"
         ]
+
+class EmployeeLogSerializer(serializers.ModelSerializer):
+    employee = serializers.SerializerMethodField()
+    card = serializers.SerializerMethodField()
+    reader = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EmployeeLog
+        fields = ["employee", "card", "reader", "created_on"]
+
+    def get_employee(self, obj):
+        return {"id": obj.employee.id, "name": obj.employee.name,"cpf_no":obj.employee.cpf_no,
+                "department_name":obj.employee.department.name if obj.employee.department else None,"designation":obj.employee.designation,
+                # "photo":obj.employee.photo
+                } if obj.employee else None
+
+    def get_card(self, obj):
+        return {"id": obj.card.id, "card_number": obj.card.card_number,"csn_number":obj.card.csn_number} if obj.card else None
+
+    def get_reader(self, obj):
+        return {"id": obj.reader.id, "name": obj.reader.name,"location":obj.reader.location} if obj.reader else None
