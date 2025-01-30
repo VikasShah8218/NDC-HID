@@ -1,7 +1,9 @@
 import React , {useState,useRef}  from "react";
 import EmployeeImage from "../../../assets/images/image_01.png"
-import { getFromServer } from "../../../globals/requests";
+import { getFromServer, getFromServerDownload } from "../../../globals/requests";
 import "./event-report.css"
+import { BASE_URL } from "../../../globals/requests";
+import { getAuthToken } from "../../../globals/auth";
 
 const EventReport: React.FC =  () => {
     const [employees,setEmployees] = useState<any[]>([]);
@@ -16,6 +18,33 @@ const EventReport: React.FC =  () => {
         const ed = refs.endDate1.current.value
         const resTasks = await getFromServer(`/reports/event-report?start_date=${sd}&end_date=${ed}`);
         if (resTasks.status){ setEmployees(resTasks.data)}
+        }
+    const clickDownload = async()=> {
+        if (!refs.startDate1.current?.value || !refs.endDate1.current?.value) { return }
+        const sd = refs.startDate1.current.value
+        const ed = refs.endDate1.current.value
+        try {
+            const response = await fetch(`${BASE_URL}`+`/reports/event-report?start_date=${sd}&end_date=${ed}&download=${true}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${getAuthToken()}`,
+                },
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Event Report";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                console.log("Something went wrong")
+            }
+        } catch (error) {
+            console.log("Something went wrong")
+        }
         }
     return (
         <>
@@ -45,7 +74,7 @@ const EventReport: React.FC =  () => {
                 <button onClick={getEmployees} >Search </button>
                 </div>
                 <div className="report-btn">
-                <button>Download</button>
+                <button onClick={clickDownload}>Download</button>
                 </div>
             </div>
             <div className="report-table">
@@ -57,8 +86,8 @@ const EventReport: React.FC =  () => {
                                 <th>name</th>
                                 <th>Card</th>
                                 <th>CPF</th>
-                                <th>MOBILE</th>
-                                <th>ADDRESS</th>
+                                <th>Location</th>
+                                <th>Reder</th>
                                 <th>DOJ</th>
                                 <th>DEPARTMENT</th>
                                 <th>DESIGNATION</th>

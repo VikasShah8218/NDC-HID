@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Employee,EmployeeLog
+from django.utils.timezone import localtime
 
 # Serializer for GET operations
 class EmployeeListSerializer(serializers.ModelSerializer):
@@ -18,6 +19,19 @@ class EmployeeListSerializer(serializers.ModelSerializer):
         ]
     def get_is_photo(self,obj):
         return True if obj.photo else False
+    
+class EmployeeEventListSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source="department.name", read_only=True)
+    card_number = serializers.CharField(source="card.card_number", read_only=True)
+
+    class Meta:
+        model = Employee
+        fields = [
+            "id", "card_number","card_id", "cpf_no", "name", "marks", "address",
+            "mobile_no", "phone_landline", "phone_dept", "phone_ext", "blood_group",
+            "dob", "level", "email", "date_of_joining", "department_name",
+            "designation", "active", "created_on", "updated_on","photo",
+        ]
 
 
 # Serializer for CREATE and UPDATE operations
@@ -34,6 +48,7 @@ class EmployeeLogSerializer(serializers.ModelSerializer):
     employee = serializers.SerializerMethodField()
     card = serializers.SerializerMethodField()
     reader = serializers.SerializerMethodField()
+    created_on = serializers.SerializerMethodField()
 
     class Meta:
         model = EmployeeLog
@@ -42,7 +57,7 @@ class EmployeeLogSerializer(serializers.ModelSerializer):
     def get_employee(self, obj):
         return {"id": obj.employee.id, "name": obj.employee.name,"cpf_no":obj.employee.cpf_no,
                 "department_name":obj.employee.department.name if obj.employee.department else None,"designation":obj.employee.designation,
-                # "photo":obj.employee.photo
+                "photo":obj.employee.photo
                 } if obj.employee else None
 
     def get_card(self, obj):
@@ -50,3 +65,7 @@ class EmployeeLogSerializer(serializers.ModelSerializer):
 
     def get_reader(self, obj):
         return {"id": obj.reader.id, "name": obj.reader.name,"location":obj.reader.location} if obj.reader else None
+
+    def get_created_on(self, obj):
+        if obj.created_on: return localtime(obj.created_on).strftime("%d-%m-%Y %I:%M %p")
+        return None

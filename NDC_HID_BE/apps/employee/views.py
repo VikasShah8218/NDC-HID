@@ -1,5 +1,5 @@
 from apps.controller.serializers import HIDReaderListSerializer , ControllerListSerializer
-from .serializers import EmployeeListSerializer, EmployeeCreateSerializer
+from .serializers import EmployeeListSerializer, EmployeeCreateSerializer,EmployeeEventListSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -75,7 +75,7 @@ def validate_event(scp_number:int,card_number:int,acr_number:int):
         rea = HIDReader.objects.get(acr_number=acr_number)
         data = {"EMP":{
             "controller":ControllerListSerializer(Controller.objects.get(scp_number=scp_number)).data ,
-            "employee":EmployeeListSerializer(emp).data, 
+            "employee":EmployeeEventListSerializer(emp).data, 
             "reader":HIDReaderListSerializer(rea).data,
             "time":now().isoformat()
             }}

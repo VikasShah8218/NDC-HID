@@ -1,3 +1,6 @@
+# ----------------------------------------------
+#            Do Not Change Import Series
+# ----------------------------------------------
 import clr
 clr.AddReference("D:/Drive-1/ESSI/NDC-HID/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
 import threading
@@ -6,6 +9,7 @@ from HID.Aero.ScpdNet.Wrapper import SCPDLL, SCPConfig , SCPReplyMessage
 
 from .models import Controller
 from apps.employee.views import validate_event
+from ws.utils import send_message
 
 SOURCE_TYPE = {
     0: "SCP diagnostics",
@@ -953,15 +957,6 @@ def change_ACR(acr_number:str ,acr_mode:str , scp_number:str, time:str=None):
     else:
         return False, "Controller is Not Online"
 
-# def show_notification(title, message):
-#     notification.notify(
-#         title=title,
-#         message=message,
-#         app_icon="assets/hid.ico",  # Icon for the notification
-#         timeout=3  # The notification will disappear after 3 seconds
-#     )
-
-
 def priodic_check_status():
     test = 2 # define to start 
     while True:
@@ -982,6 +977,7 @@ def priodic_check_status():
                         "name":controller.name
                     })
                     print(data)
+                    send_message({"CRT":data})
                     if scp_isAttached and driver_isonline :
                         print("✅ ✅")
                     else:
@@ -992,7 +988,8 @@ def priodic_check_status():
             time.sleep(20)
         except Exception as e:
             print(e)
-
+        time.sleep(10)
+        
 def config_controller(controller,file):
     driver_isOnline, scp_isAttached = None, None
     if controller and file:driver_isOnline, scp_isAttached = check_attached_online(controller.scp_number) 

@@ -14,6 +14,12 @@ const genHeaders = () => {
     "Content-Type": "application/json",
   };
 };
+const genHeadersPdf = () => {
+  return {
+    Authorization: `Token ${getAuthToken()}`,
+    "Accept": "application/pdf",
+  };
+};
 const genFormHeaders = () => {
   return {
     Authorization: `Token ${getAuthToken()}`,
@@ -31,6 +37,33 @@ const getFromServer = async (url:any) => {
     if (res.status === 200 || res.status === 201) {
       store.dispatch(setRequestLoading(false))
       return { status: true, data: res.data, detail: res.data.detail };
+    } else if(res.status===401){
+      store.dispatch(setRequestLoading(false))
+      store.dispatch(logout());;
+      return {}
+    }
+    else {
+      return { status:false};
+    }
+  } catch (error:any) {
+    if (error.response && error.response.data && error.response.data.detail) {
+      store.dispatch(setRequestLoading(false))
+      if(error.response.status===401){
+        store.dispatch(logout());;
+         return {}
+      }
+      return { status: error.response.status, detail: error.response.data.detail };
+    } else return { status: false, detail: ERROR_MSG };
+  }
+};
+const getFromServerDownload = async (url:any) => {
+  try {
+    store.dispatch(setRequestLoading(true))
+    const res = await axios.get(`${BASE_URL}${url}`, { headers: genHeaders() });
+    store.dispatch(setRequestLoading(false))
+    if (res.status === 200 || res.status === 201) {
+      store.dispatch(setRequestLoading(false))
+      return res;
     } else if(res.status===401){
       store.dispatch(setRequestLoading(false))
       store.dispatch(logout());;
@@ -178,4 +211,4 @@ const deleteFromServer = async (url:string, data = {}) => {
   }
 };
 
-export { getFromServer, postToServer, putToServer ,deleteFromServer,patchToServer,postToServerFileUpload ,BASE_URL};
+export { getFromServer, postToServer, putToServer ,deleteFromServer,patchToServer,postToServerFileUpload,getFromServerDownload ,BASE_URL};

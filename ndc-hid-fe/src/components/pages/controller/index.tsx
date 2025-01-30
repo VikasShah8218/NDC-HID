@@ -1,6 +1,11 @@
-import "./controller.css"
+import {useEffect} from "react";
+import { useSelector } from "react-redux";
 import HIDImage from "../../../assets/images/hid_aero.png"
+import "./controller.css"
+
 const Controller = () => {
+    const wsMessage = useSelector((state: any) => state.auth.wsMessage?.message?.CRT || null);
+    useEffect(()=>{console.log("Shah Message",wsMessage)},[wsMessage])
     return(
         <>
         <div className="controller-page">
