@@ -3,6 +3,7 @@ import EmployeeImage from "../../../assets/images/image_01.png"
 import { getFromServer, patchToServer, postToServer } from "../../../globals/requests";
 import "./emp.css"
 import { BASE_URL } from "../../../globals/requests";
+import {toast } from 'react-toastify';
 
 const Employee: React.FC = () => {
     const emptyFormData = {
@@ -39,15 +40,15 @@ const Employee: React.FC = () => {
 
     const getEmployees = async()=> {
         const response = await getFromServer("/employee/view");
-        if (response.status){setEmployees(response.data)}
+        if (response.status){setEmployees(response.data);toast.success("Checking")}
     }
     const getDpartment = async()=> {
         const response = await getFromServer("/employee/department-view");
-        if (response.status){setDepartments(response.data)}
+        if (response.status){setDepartments(response.data);toast.error("Checking")}
     }
     const getCard = async()=> {
         const response = await getFromServer("/controller/cards");
-        if (response.status){setCards(response.data)}
+        if (response.status){setCards(response.data);toast.success("Checking")}
     }
    const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
        setFormData((prevFormData) => ({

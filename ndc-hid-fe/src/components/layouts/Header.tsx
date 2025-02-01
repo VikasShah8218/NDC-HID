@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import NDCImage from "../../assets/images/image_01.png"
 import Footer from "./footer";
 import "./nav.css"
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -23,11 +24,11 @@ const Header: React.FC = () => {
       dispatch(logout())
   }
 
+
   return (
     <>
-    <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
+    {/* <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
       <Toolbar>
-        {/* Logo */}
         <Avatar
           src={NDCImage}
           alt="Logo"
@@ -35,7 +36,6 @@ const Header: React.FC = () => {
         />
         {loggedInUser.first_name}
 
-        {/* Title */}
         <Box sx={{ flexGrow: 1 }}>
           <Typography
             variant="h6"
@@ -58,7 +58,6 @@ const Header: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Logout Button */}
         <Button
           variant="contained"
           color="secondary"
@@ -73,7 +72,22 @@ const Header: React.FC = () => {
           Logout
         </Button>
       </Toolbar>
-    </AppBar>
+    </AppBar> */}
+    <nav>
+      <div> 
+          <img src={NDCImage} alt="" />
+          <h2> {loggedInUser.first_name}</h2>
+      </div>
+      <div className="headli">
+        <div className="hed1"> NATIONAL DEFENCE COLLEGE ( Gov. of India )</div>
+        <div className="hed2">Building Integration System (BIS)</div>
+        <div className="hed3">Employee Management System</div>
+      </div>
+      <div>
+        <button  onClick={handleLogout}> LOGOUT </button>
+      </div>
+    </nav>
+
     <div className="navigation-bar">
       <div className="nag-button" onClick={()=>{navigate("/list")}} >Home</div>
       <div className="nag-button" onClick={()=>{navigate("")}} >New Entry</div>
