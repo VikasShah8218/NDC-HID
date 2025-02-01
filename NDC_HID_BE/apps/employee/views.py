@@ -1,18 +1,14 @@
 from apps.controller.serializers import HIDReaderListSerializer , ControllerListSerializer
-from .serializers import EmployeeListSerializer, EmployeeCreateSerializer,EmployeeEventListSerializer
+from .serializers import EmployeeListSerializer, EmployeeCreateSerializer,EmployeeEventListSerializer,EmployeeUpdateSerializer,DepartmentListSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Employee
+from .models import Employee,Department,EmployeeLog
 from ws.utils import send_message
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from apps.controller.models import Card, HIDReader,Controller
 from django.utils.timezone import now
-from apps.employee.models import EmployeeLog
-
-
-
 from django.http import FileResponse, HttpResponse
 import base64
 import io
@@ -22,8 +18,16 @@ class Test(APIView):
     def post(self, request):
         return Response({"detail":"this is working"})
 
+    
+class DepartmentViewSet(ModelViewSet):
+    queryset = Department.objects.all().order_by("name")
+    pagination_class = None 
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve"]:
+            return DepartmentListSerializer
+
 class EmployeeViewSet(ModelViewSet):
-    queryset = Employee.objects.all().order_by("-id")
+    queryset = Employee.objects.filter(active = True).order_by("-id")
     pagination_class = None 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
@@ -31,7 +35,47 @@ class EmployeeViewSet(ModelViewSet):
         return EmployeeCreateSerializer
     
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        try:
+            data =  request.data
+            serializer = EmployeeCreateSerializer(data = data)
+            serializer.is_valid(raise_exception=True)
+            card = Card.objects.get(id = data["card_id"])
+            if card: data["card"] = card.id
+            data["department"] = data.get("department_id",None)
+            if card.allot_status:
+                emp = Employee.objects.get(card = card, active= True)
+                return  Response({"detail":f"This Card is already assigned to {emp.name}"},status=409)
+            serializer.save()
+            card.allot_status = True
+            card.save()
+            return Response({"detail":serializer.data}, status=200)
+        except Card.DoesNotExist :
+            return Response({"detail": "Selected Card not Found"}, status=404)
+        except Exception as e:
+            return Response({"detail":str(e)},status=500)
+        
+    def update(self, request, *args, **kwargs):
+        try:
+            emp = self.get_object()
+            data =  request.data
+            card_id = data.get("card_id",None)
+            if card_id: 
+                Employee.objects.filter(card_id = card_id, active = True).update(card_id = None)
+                data["card"] = card_id
+            if emp.card:
+                emp.card.allot_status = False
+                emp.card.save()
+
+            department_id = data.get("department_id",None)
+            if department_id: data["department"] = department_id
+
+            serializer = EmployeeUpdateSerializer(emp , data = data)
+            serializer.is_valid(raise_exception=True) 
+            serializer.save()
+            return Response({"detail":"Updated"},status=200)
+        except Exception as e:
+            return Response({"detail":str(e)},status=500)
+        
 
 @api_view(["GET"])
 @csrf_exempt
@@ -104,3 +148,6 @@ def validate_event(scp_number:int,card_number:int,acr_number:int):
         print(error)
         send_message(error)
         return(error)
+
+
+

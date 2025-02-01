@@ -924,20 +924,43 @@ def connect_to_all():
         controllers = Controller.objects.all()
         for controller in controllers:
             connection_protocol = [
-                f'11 512 512 0 0 1 0 0 0 0 0',
-                f'208 {controller.scp_number} 0',
-                f'012 {controller.channel_number} 4 0 0 3000 15000 "" 0'  ,
-                f'1013 {controller.scp_number} 0 4 3 5000 "{controller.ip}" "" 15000', 
-                # f'1107 0 {controller.scp_number} 0 0 0 0 3 50000 32 615 388 64 255 1000 1000 21600 100 255 100 1 10000 0 1 0 0',
-                # f'1105 0 {controller.scp_number} 10000 32 4 1 1 1 1 1 1 3 1 1 60 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0',
-                f'0207 {controller.scp_number} {controller.channel_number} 0',
+           '11 512 512 0 0 1 0 0 0 0 0',
+           '012 257 4 0 0 3000 15000 "" 0',
+           '1013 1234 0 4 3 5000 "192.168.0.251" "" 15000',
+           '1107 0 1234 0 0 0 0 3 50000 32 615 388 64 255 1000 1000 19800 0 255 100 1 10000 0 1 0 0 0',
+           '1105 0 1234 1000 32 4 1 1 1 1 1 1 3 1 1 60 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 ',
+           '0207 1234 257 0',
             ]
             for i, command in enumerate(connection_protocol):
                 rr = write_command(command)
                 print(f"output: {i} => ",rr)
+
+            # connection_protocoll = [
+            #     '1107 0 1234 0 0 0 0 3 50000 32 615 388 64 255 1000 1000 19800 0 255 100 1 10000 0 1 0 0 0',
+            #     '1105 0 1234 1000 32 4 1 1 1 1 1 1 3 1 1 60 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0',
+            # ]
+            # for i, command in enumerate(connection_protocoll):
+            #     rr = write_command(command)
+            #     print(f"output: {i} => ",rr)
         return True , "OK"
     except Exception as  e:
         return False , str(e)
+    
+def add_card_in_IC(card_number):
+    driver_isOnline , scp_isAttached =  check_attached_online("1234")
+    if (driver_isOnline and scp_isAttached):
+        connection_protocoll = [
+            '1107 0 1234 0 0 0 0 3 50000 32 615 388 64 255 1000 1000 19800 0 255 100 1 10000 0 1 0 0 0',
+            '1105 0 1234 1000 32 4 1 1 1 1 1 1 3 1 1 60 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0',
+        ]
+        for i, command in enumerate(connection_protocoll):
+            rr = write_command(command)
+            print(f"output: {i} => ",rr)
+        # command = f'5304 0 1234 1 {card_number}  -1 "1234" 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1651363201 2085978495 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  0 0 0'
+        # rr = write_command(command)
+        if rr:
+            return True
+    return False
 
 def change_ACR(acr_number:str ,acr_mode:str , scp_number:str, time:str=None):
 
@@ -976,8 +999,7 @@ def priodic_check_status():
                         "attached":scp_isAttached,
                         "name":controller.name
                     })
-                    print(data)
-                    send_message({"CRT":data})
+                    # print(data)
                     if scp_isAttached and driver_isonline :
                         print("✅ ✅")
                     else:
@@ -985,6 +1007,7 @@ def priodic_check_status():
                             print("❌ ✅")
                         elif driver_isonline:
                             print("✅ ❌")
+                        send_message({"CRT":data})
             time.sleep(20)
         except Exception as e:
             print(e)

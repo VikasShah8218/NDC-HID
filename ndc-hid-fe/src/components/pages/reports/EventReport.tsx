@@ -78,7 +78,7 @@ const EventReport: React.FC =  () => {
                 </div>
             </div>
             <div className="report-table">
-                <div className="emp-table" style={{maxHeight:"80vh", overflow:"auto"}} >
+                <div className="emp-table" style={{maxHeight:"71vh", overflow:"auto"}} >
                     <table>
                         <thead>
                             <tr>
@@ -88,7 +88,7 @@ const EventReport: React.FC =  () => {
                                 <th>CPF</th>
                                 <th>Location</th>
                                 <th>Reder</th>
-                                <th>DOJ</th>
+                                <th>Date Time</th>
                                 <th>DEPARTMENT</th>
                                 <th>DESIGNATION</th>
                             </tr>

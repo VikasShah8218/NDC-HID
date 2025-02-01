@@ -11,7 +11,7 @@ import { useDispatch ,useSelector} from "react-redux";
 import { postToServer } from '../../globals/requests';
 import { useNavigate } from "react-router-dom";
 import NDCImage from "../../assets/images/image_01.png"
-
+import Footer from "./footer";
 import "./nav.css"
 
 const Header: React.FC = () => {
@@ -82,6 +82,7 @@ const Header: React.FC = () => {
       <div className="nag-button" onClick={()=>{navigate("/controller")}} >Controller Settings</div>
     </div>
     <Outlet />
+    <Footer />
     </>
     
   );

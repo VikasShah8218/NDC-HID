@@ -1,6 +1,6 @@
 import React, {useEffect, useState}  from "react";
 import EmployeeImage from "../../../assets/images/image_01.png"
-import { getFromServer } from "../../../globals/requests";
+import { getFromServer, patchToServer, postToServer } from "../../../globals/requests";
 import "./emp.css"
 import { BASE_URL } from "../../../globals/requests";
 
@@ -23,6 +23,7 @@ const Employee: React.FC = () => {
       email: "",
       date_of_joining: "",
       department_name: "",
+      department_id: "",
       designation: "",
       photo: "",
       active: null,
@@ -30,14 +31,19 @@ const Employee: React.FC = () => {
     }
 
     const [employees,setEmployees] = useState<any[]>([]);
+    const [departments,setDepartments] = useState<any[]>([]);
     const [cards,setCards] = useState<any[]>([]);
     const [formData, setFormData] = useState({...emptyFormData})
 
     const showDetails = (i: number) => setFormData(employees[i]);
 
     const getEmployees = async()=> {
-        const response = await getFromServer("/employee");
+        const response = await getFromServer("/employee/view");
         if (response.status){setEmployees(response.data)}
+    }
+    const getDpartment = async()=> {
+        const response = await getFromServer("/employee/department-view");
+        if (response.status){setDepartments(response.data)}
     }
     const getCard = async()=> {
         const response = await getFromServer("/controller/cards");
@@ -50,12 +56,22 @@ const Employee: React.FC = () => {
         }));
     }
    
-    const saveData = () =>{console.log(formData)}
-    useEffect(()=>{getEmployees();getCard();},[])
+    const saveData = async() =>{
+        let response;
+        if (formData.id){ response = await patchToServer(`/employee/view/${formData.id}/`,formData) }
+        else{ response = await postToServer("/employee/view/",formData) }
+        if (response.status == 200 || response.status == 201){
+            console.log(response.data)
+            getEmployees()
+            setFormData({...emptyFormData})
+        }
+    }
+
+    useEffect(()=>{getEmployees();getCard();getDpartment();},[])
     
     
   return (
-    <div style={{ display: "flex", padding: "8px 16px 16px 16px", backgroundColor: "#f4f4f4" }} >
+    <div style={{ display: "flex", padding: "8px 16px 10px 16px", backgroundColor: "#f4f4f4" }} >
         <div className="sidebar">
             <div className="sidebar-heading">
                 <h3>Employee Information</h3>
@@ -67,7 +83,8 @@ const Employee: React.FC = () => {
             </div> */}
             <div className="form-element">
                 <label htmlFor="cards">Card:</label>
-                <select id="cards" name="card_id" value={formData.card_id} onChange={changeField} >
+                <select id="cards" name="card_id" value={formData.card_id}  onChange={changeField} >
+                    {/* <option >{formData.card_number}</option> */}
                     {cards.map((card, i) => 
                         <option key={i} value={card?.id}>{card?.card_number}</option>
                     )}
@@ -85,8 +102,8 @@ const Employee: React.FC = () => {
             </div>
             
             <div className="form-element">
-                <label htmlFor="dob">Date of Birth :</label>
-                <input type="text" id="dob" value={formData.dob}  name="dob" onChange={changeField}/>
+                <label htmlFor="dob"  >Date of Birth :</label>
+                <input type="date" id="dob" value={formData.dob}  name="dob" onChange={changeField}/>
             </div>
             
             <div className="form-element">
@@ -105,7 +122,7 @@ const Employee: React.FC = () => {
             
             <div className="form-element">
                 <label htmlFor="doj">Date of Joining :</label>
-                <input type="text" id="doj" value={formData.date_of_joining} name="date_of_joining" onChange={changeField}/>
+                <input type="date" id="doj" value={formData.date_of_joining} name="date_of_joining" onChange={changeField}/>
             </div>
             <div className="form-element">
                 <label htmlFor="designation">Designation :</label>
@@ -403,8 +420,13 @@ const Employee: React.FC = () => {
             </div>
             
             <div className="form-element">
-                <label htmlFor="department">Department:</label>
-                <input type="text" id="department" disabled value={formData.department_name}  name="department_name" onChange={changeField}/>
+                <label htmlFor="cards">Department:</label>
+                <select id="cards" name="department_id" value={formData.department_id}  onChange={changeField} >
+                    <option value="" > Select Department </option>
+                    {departments.map((department, i) => 
+                        <option key={i} value={department?.id}>{department?.name}</option>
+                    )}
+                </select>
             </div>
             
             <div className="form-element">
@@ -434,7 +456,7 @@ const Employee: React.FC = () => {
             </div>
 
             <button onClick={()=>setFormData({...emptyFormData})} >RESET</button>
-            <button onClick={saveData} >SAVE</button>
+            <button onClick={saveData} > { formData.id?"Save":"Add New" } </button>
             <button>DELETE</button>
         </div>
         <div style={{flex:"3",paddingLeft:"16px"}} >
@@ -447,7 +469,7 @@ const Employee: React.FC = () => {
                       <th>Card</th>
                       <th>CPF</th>
                       <th>MOBILE</th>
-                      <th>ADDRESS</th>
+                      {/* <th>ADDRESS</th> */}
                       <th>DOJ</th>
                       <th>DEPARTMENT</th>
                       <th>DESIGNATION</th>
@@ -458,11 +480,11 @@ const Employee: React.FC = () => {
                 {employees?.map((emp, i) =>
                   <tr  onClick={() => showDetails(i)}>
                       <td className="table-img" ><img src={ emp?.is_photo?`${BASE_URL}/employee/emp-img/${emp.id}`:EmployeeImage} alt="Photo" width="50" /></td>
-                      <td>{emp.card_id}</td>
+                      <td>{emp.name}</td>
                       <td>{emp.card_number}</td>
                       <td>{emp. cpf_no}</td>
                       <td>{emp.mobile_no}</td>
-                      <td>{emp.address}</td>
+                      {/* <td>{emp.address}</td> */}
                       <td>{emp.dob}</td>
                       <td>{emp.department_name}</td>
                       <td>{emp.designation}</td>

@@ -32,12 +32,12 @@ class EventReport(APIView):
         if is_field:
             filter_args = {search_field: search_value}
             try:
-                emp_log = EmployeeLog.objects.filter(**filter_args,created_on__gte = start_date,created_on__lt= end_date)
+                emp_log = EmployeeLog.objects.filter(**filter_args,created_on__gte = (start_date +" 00:00:00"),created_on__lt= (end_date)+" 23:59:59")
             except:
                 return Response({"detail":"Unprocessable Data"})
         else:
             try:
-                emp_log = EmployeeLog.objects.filter(created_on__gte = start_date,created_on__lt= end_date)
+                emp_log = EmployeeLog.objects.filter(created_on__gte = (start_date +" 00:00:00"),created_on__lt= (end_date)+" 23:59:59")
             except:
                 return Response({"detail":"Unprocessable Data"})
         serializer = EmployeeLogSerializer(emp_log,many = True)

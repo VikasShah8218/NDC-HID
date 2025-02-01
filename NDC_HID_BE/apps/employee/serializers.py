@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Employee,EmployeeLog
+from .models import Employee,EmployeeLog,Department
 from django.utils.timezone import localtime
 
 # Serializer for GET operations
@@ -13,7 +13,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
         fields = [
             "id", "card_number","card_id", "cpf_no", "name", "marks", "address",
             "mobile_no", "phone_landline", "phone_dept", "phone_ext", "blood_group",
-            "dob", "level", "email", "date_of_joining", "department_name",
+            "dob", "level", "email", "date_of_joining", "department_name","department_id",
             "designation", "active", "created_on", "updated_on","is_photo"
             # "photo"
         ]
@@ -29,20 +29,33 @@ class EmployeeEventListSerializer(serializers.ModelSerializer):
         fields = [
             "id", "card_number","card_id", "cpf_no", "name", "marks", "address",
             "mobile_no", "phone_landline", "phone_dept", "phone_ext", "blood_group",
-            "dob", "level", "email", "date_of_joining", "department_name",
+            "dob", "level", "email", "date_of_joining", "department_name","department_id",
             "designation", "active", "created_on", "updated_on","photo",
         ]
 
 
 # Serializer for CREATE and UPDATE operations
 class EmployeeCreateSerializer(serializers.ModelSerializer):
+    cpf_no = serializers.CharField(required=True)
+    name = serializers.CharField(required=True)
+    # department = serializers.CharField(required=True)
     class Meta:
         model = Employee
         fields = [
             "card", "cpf_no", "name", "marks", "address", "mobile_no",
             "phone_landline", "phone_dept", "phone_ext", "blood_group", "dob",
-            "level", "email", "date_of_joining", "department", "designation", "photo", "active"
+            "level", "email", "date_of_joining", "department", "designation", "photo"
         ]
+class DepartmentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = "__all__"
+
+class EmployeeUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = "__all__"
+        read_only_fields = ["id", "created_on"]
 
 class EmployeeLogSerializer(serializers.ModelSerializer):
     employee = serializers.SerializerMethodField()
@@ -67,5 +80,5 @@ class EmployeeLogSerializer(serializers.ModelSerializer):
         return {"id": obj.reader.id, "name": obj.reader.name,"location":obj.reader.location} if obj.reader else None
 
     def get_created_on(self, obj):
-        if obj.created_on: return localtime(obj.created_on).strftime("%d-%m-%Y %I:%M %p")
+        if obj.created_on: return localtime(obj.created_on).strftime("%Y-%m-%d %I:%M %p")
         return None

@@ -140,23 +140,21 @@ def generate_pdf_from_html(request,data,perms,type):
         <th>Name</th>
         <th>Card</th>
         <th>CPF</th>
-        <th>Reader</th>
-        <th>DOJ</th>
+        <th>Location</th>
+        <th>Date Time</th>
         <th>Department</th>
         <th>Designation</th>
         </tr>
         '''
         table_data = ''' '''
         for i in data:
-            # created_on = datetime.fromisoformat(i["created_on"]).strftime('%d-%m-%Y %I:%M %p')
-            # print(i["created_on"])
             table_data += f''' 
             <tr>
                 <td><img style="height:50px;width:50px;"  src="data:image/png;base64,{i["employee"]["photo"]}"></td>
                 <td>{i["employee"]["name"]}</td>
                 <td>{i["card"]["card_number"]}</td>
                 <td>{i["employee"]["cpf_no"]}</td>
-                <td>{i["reader"]["name"]}</td>
+                <td>{i["reader"]["location"]}</td>
                 <td>{i["created_on"]}</td>
                 <td>{i["employee"]["department_name"]}</td>
                 <td>{i["employee"]["designation"]}</td>
@@ -179,7 +177,10 @@ def generate_pdf_from_html(request,data,perms,type):
         </div>
         
         <div class="heading">
-            <h2>National Defence College</h2>
+            <h2>National Defence College ( Gov of India )</h2>
+        </div>
+        <div class="sub-heading">
+            <p>Personal Access Control</p>
         </div>
         <div class="sub-heading">
             <p>{perms["type"]}</p>

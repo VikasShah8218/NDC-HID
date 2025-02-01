@@ -189,6 +189,12 @@ th {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+.form-element input[type="date"] {
+    flex: 2;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 .table-img{
     text-align: center;
 }

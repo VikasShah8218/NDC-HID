@@ -30,7 +30,7 @@ import { useSelector } from "react-redux";
 // }
 
 const EmployeeEventDetails: React.FC = () => {
-    const wsMessage = useSelector((state: any) => state.auth.wsMessage?.message?.EMP || null);
+    const wsMessage = useSelector((state: any) => state.auth.wsMessage?.message?.EMP);
 
     useEffect(()=>{console.log("Shah Message",wsMessage)},[wsMessage])
     return (

@@ -12,3 +12,4 @@ pip install channels-redis
 pip install pyodbc   ( only data migrations  )
 pip install pillow
 pip install pdfkit
+pip install pyinstaller

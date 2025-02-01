@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Card
 from .tasks import test
+from .hid import add_card_in_IC
+from django.http import HttpResponse
+
 
 
 class Test(APIView):
@@ -27,9 +30,14 @@ class CeleryStop(APIView):
         return Response({"data":data},status = 200)
     
 class Cards(ModelViewSet):
-    queryset = Card.objects.all().order_by("card_number")
+    queryset = Card.objects.filter().order_by("card_number")
     pagination_class = None 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
             return CardListSerializer
         # return EmployeeCreateSerializer
+
+def add_card(request):
+    data = add_card_in_IC("1240")
+    
+    return HttpResponse(data)
