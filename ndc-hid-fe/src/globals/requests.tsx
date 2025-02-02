@@ -14,12 +14,6 @@ const genHeaders = () => {
     "Content-Type": "application/json",
   };
 };
-const genHeadersPdf = () => {
-  return {
-    Authorization: `Token ${getAuthToken()}`,
-    "Accept": "application/pdf",
-  };
-};
 const genFormHeaders = () => {
   return {
     Authorization: `Token ${getAuthToken()}`,
@@ -31,41 +25,25 @@ const genFormHeaders = () => {
 
 const getFromServer = async (url:any) => {
   try {
-    store.dispatch(setRequestLoading(true))
     const res = await axios.get(`${BASE_URL}${url}`, { headers: genHeaders() });
-    store.dispatch(setRequestLoading(false))
-    if (res.status === 200 || res.status === 201) {
-      store.dispatch(setRequestLoading(false))
-      return { status: true, data: res.data, detail: res.data.detail };
-    } else if(res.status===401){
-      store.dispatch(setRequestLoading(false))
-      store.dispatch(logout());;
-      return {}
-    }
-    else {
-      return { status:false};
-    }
-  } catch (error:any) {
+    if (res.status === 200 || res.status === 201) { return { status: true, data: res.data, detail: res.data.detail }} 
+    else if(res.status===401){store.dispatch(logout());return {}}
+    else { return { status:false}}
+  } 
+  catch (error:any) {
     if (error.response && error.response.data && error.response.data.detail) {
-      store.dispatch(setRequestLoading(false))
-      if(error.response.status===401){
-        store.dispatch(logout());;
-         return {}
-      }
+      if(error.response.status===401){store.dispatch(logout()); return {}}
       return { status: error.response.status, detail: error.response.data.detail };
-    } else return { status: false, detail: ERROR_MSG };
+    } 
+    else return { status: false, detail: ERROR_MSG };
   }
 };
 const getFromServerDownload = async (url:any) => {
   try {
-    store.dispatch(setRequestLoading(true))
     const res = await axios.get(`${BASE_URL}${url}`, { headers: genHeaders() });
-    store.dispatch(setRequestLoading(false))
     if (res.status === 200 || res.status === 201) {
-      store.dispatch(setRequestLoading(false))
       return res;
     } else if(res.status===401){
-      store.dispatch(setRequestLoading(false))
       store.dispatch(logout());;
       return {}
     }
@@ -74,7 +52,6 @@ const getFromServerDownload = async (url:any) => {
     }
   } catch (error:any) {
     if (error.response && error.response.data && error.response.data.detail) {
-      store.dispatch(setRequestLoading(false))
       if(error.response.status===401){
         store.dispatch(logout());;
          return {}
@@ -87,46 +64,32 @@ const getFromServerDownload = async (url:any) => {
 
 const postToServer = async (url:string, data = {}) => {
   try {
-    store.dispatch(setRequestLoading(true))
-    const res = await axios.post(`${BASE_URL}${url}`, data, {
-      headers: genHeaders(),
-    });
-    store.dispatch(setRequestLoading(false))
-    
-    if(res.status===401){
-      store.dispatch(setRequestLoading(false))
-      store.dispatch(logout());
-      return {}
-    }
+    const res = await axios.post(`${BASE_URL}${url}`, data, {headers: genHeaders(),});
+    if(res.status===401){store.dispatch(logout()); return {}}
     return { status: res.status, data: res.data };  
-  } catch (error:any) {
+  } 
+  catch (error:any) {
     if (error.response) {
-      store.dispatch(setRequestLoading(false))
-      if(error.response.status===401){store.dispatch(logout());; return {}}
+      if(error.response.status===401){store.dispatch(logout()); return {}}
       return { status: error.response.status, data: error.response.data };
-    } else {
-      return { status: false, data: "An error occurred" };
-    }
+    } 
+    else { return { status: false, data: "An error occurred" };}
   }
 };
 
 
 const postToServerFileUpload = async (url:string, data = new FormData()) => {
   try {
-    store.dispatch(setRequestLoading(true))
     const res = await axios.post(`${BASE_URL}${url}`, data, {
       headers: genFormHeaders(),
     });
-    store.dispatch(setRequestLoading(false))
     if(res.status===401){
-      store.dispatch(setRequestLoading(false))
       store.dispatch(logout());;
       return {}
     }
     return { status: res.status, data: res.data };  
   } catch (error:any) {
     if (error.response) {
-      store.dispatch(setRequestLoading(false))
       if(error.response.status===401){
         store.dispatch(logout());;
         return {}
@@ -136,7 +99,6 @@ const postToServerFileUpload = async (url:string, data = new FormData()) => {
         data: error.response.data 
       };
     } else {
-      store.dispatch(setRequestLoading(false))
       return { status: false, data: "An error occurred" };
     }
   }
@@ -145,31 +107,16 @@ const postToServerFileUpload = async (url:string, data = new FormData()) => {
 
 const patchToServer = async (url:string, data = {}) => {
   try {
-    store.dispatch(setRequestLoading(true))
-    const res = await axios.patch(`${BASE_URL}${url}`, data, {
-      headers: genHeaders(),
-    });
-    store.dispatch(setRequestLoading(false))
-    if(res.status===401){
-      store.dispatch(logout());;
-      return {}
-    }
+    const res = await axios.patch(`${BASE_URL}${url}`, data, {headers: genHeaders(),});
+    if(res.status===401){store.dispatch(logout()); return {}}
     return { status: res.status, data: res.data };  
-  } catch (error:any) {
-    store.dispatch(setRequestLoading(false))
+  } 
+  catch (error:any) {
     if (error.response) {
-      if(error.response.status===401){
-        store.dispatch(logout());;
-        return {}
-      }
-      return { 
-        status: error.response.status, 
-        data: error.response.data 
-      };
-    } else {
-      store.dispatch(setRequestLoading(false))
-      return { status: false, detail: "An error occurred" };
-    }
+      if(error.response.status===401){store.dispatch(logout()); return {}}
+      return { status: error.response.status, data: error.response.data };
+    } 
+    else {return { status: false, detail: "An error occurred" };}
   }
 };
 

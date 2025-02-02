@@ -1,10 +1,4 @@
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { Avatar } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { logout } from "../../app/slices/authSlice";
 import { useDispatch ,useSelector} from "react-redux";
@@ -13,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import NDCImage from "../../assets/images/image_01.png"
 import Footer from "./footer";
 import "./nav.css"
-import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -27,52 +20,6 @@ const Header: React.FC = () => {
 
   return (
     <>
-    {/* <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
-      <Toolbar>
-        <Avatar
-          src={NDCImage}
-          alt="Logo"
-          sx={{ marginRight: 2, backgroundColor:"white",padding:"5px",alignItems:"center" }}
-        />
-        {loggedInUser.first_name}
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ fontWeight: "bold", textAlign: "center" }}
-          >
-            NATIONAL DEFENCE COLLEGE
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{ textAlign: "center", fontSize: "0.875rem" }}
-          >
-            Building Integration System (BIS)
-          </Typography>
-          <Typography
-            variant="subtitle2"
-            sx={{ textAlign: "center", fontSize: "0.75rem" }}
-          >
-            Employee Management System
-          </Typography>
-        </Box>
-
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={handleLogout}
-          sx={{
-            fontWeight: "bold",
-            backgroundColor: "red",
-            "&:hover": { backgroundColor: "darkred" },
-          }}
-        >
-          Logout
-        </Button>
-      </Toolbar>
-    </AppBar> */}
     <nav>
       <div> 
           <img src={NDCImage} alt="" />

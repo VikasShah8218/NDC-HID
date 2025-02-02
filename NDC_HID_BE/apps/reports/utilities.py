@@ -177,7 +177,7 @@ def generate_pdf_from_html(request,data,perms,type):
         </div>
         
         <div class="heading">
-            <h2>National Defence College ( Gov of India )</h2>
+            <h2>National Defence College ( Gov. of India )</h2>
         </div>
         <div class="sub-heading">
             <p>Personal Access Control</p>

@@ -40,15 +40,18 @@ const Employee: React.FC = () => {
 
     const getEmployees = async()=> {
         const response = await getFromServer("/employee/view");
-        if (response.status){setEmployees(response.data);toast.success("Checking")}
+        if (response.status){setEmployees(response.data);}
+        else{toast.error(response?.detail)}
     }
     const getDpartment = async()=> {
         const response = await getFromServer("/employee/department-view");
-        if (response.status){setDepartments(response.data);toast.error("Checking")}
+        if (response.status){setDepartments(response.data);}
+        else{toast.error(response?.detail)}
     }
     const getCard = async()=> {
         const response = await getFromServer("/controller/cards");
-        if (response.status){setCards(response.data);toast.success("Checking")}
+        if (response.status){setCards(response.data);}
+        else{toast.error(response?.detail)}
     }
    const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
        setFormData((prevFormData) => ({
@@ -65,7 +68,9 @@ const Employee: React.FC = () => {
             console.log(response.data)
             getEmployees()
             setFormData({...emptyFormData})
+            toast.success(response?.data?.detail)
         }
+        else{toast.error(response?.data?.detail)}
     }
 
     useEffect(()=>{getEmployees();getCard();getDpartment();},[])

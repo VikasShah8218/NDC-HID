@@ -1,9 +1,10 @@
 import React , {useState,useRef}  from "react";
 import EmployeeImage from "../../../assets/images/image_01.png"
-import { getFromServer, getFromServerDownload } from "../../../globals/requests";
+import { getFromServer } from "../../../globals/requests";
 import "./event-report.css"
 import { BASE_URL } from "../../../globals/requests";
 import { getAuthToken } from "../../../globals/auth";
+import {toast } from 'react-toastify';
 
 const EventReport: React.FC =  () => {
     const [employees,setEmployees] = useState<any[]>([]);
@@ -17,7 +18,11 @@ const EventReport: React.FC =  () => {
         const sd = refs.startDate1.current.value
         const ed = refs.endDate1.current.value
         const resTasks = await getFromServer(`/reports/event-report?start_date=${sd}&end_date=${ed}`);
-        if (resTasks.status){ setEmployees(resTasks.data)}
+        if (resTasks.status){ 
+            setEmployees(resTasks.data); 
+            resTasks.data.length>0?toast.success("Employee Log Fetched"):toast.error("Record is Empty for this Date Range")
+        }
+        else{ toast.error("Something Went Wrong") }
         }
     const clickDownload = async()=> {
         if (!refs.startDate1.current?.value || !refs.endDate1.current?.value) { return }
@@ -41,9 +46,11 @@ const EventReport: React.FC =  () => {
                 document.body.removeChild(link);
             } else {
                 console.log("Something went wrong")
+                toast.error("Something Went Wrong")
             }
         } catch (error) {
             console.log("Something went wrong")
+            toast.error("Something Went Wrong")
         }
         }
     return (
