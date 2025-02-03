@@ -3,7 +3,7 @@
 # ----------------------------------------------
 import clr
 # clr.AddReference("D:/Drive-1/ESSI/NDC-HID/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
-clr.AddReference("C:/NDC/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
+clr.AddReference("C:/NDC-HID/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
 import threading
 import time
 from HID.Aero.ScpdNet.Wrapper import SCPDLL, SCPConfig , SCPReplyMessage 
