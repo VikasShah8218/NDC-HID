@@ -3,7 +3,7 @@ import { getAuthToken } from "./auth";
 import store from "../app/store";
 import { logout } from "../app/slices/authSlice";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:8000/api";
 
 const ERROR_MSG = { type: "error", text: "Something went wrong." };
 
