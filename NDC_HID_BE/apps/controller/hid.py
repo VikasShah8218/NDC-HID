@@ -1,9 +1,18 @@
 # ----------------------------------------------
+# 
 #            Do Not Change Import Series
+# 
 # ----------------------------------------------
+from pathlib import Path
+
+def get_full_path(relative_path):
+    file_path = Path(relative_path).resolve()
+    if file_path.exists(): return str(file_path).replace("\\", "/") 
+    else: exit()
+
 import clr
-# clr.AddReference("D:/Drive-1/ESSI/NDC-HID/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
-clr.AddReference("C:/NDC-HID/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
+clr.AddReference(get_full_path(relative_path= "apps/controller/driver/HIDAeroWrap64.dll"))
+# clr.AddReference("C:/NDC-HID/NDC_HID_BE/apps/controller/driver/HIDAeroWrap64.dll")
 import threading
 import time
 from HID.Aero.ScpdNet.Wrapper import SCPDLL, SCPConfig , SCPReplyMessage 
