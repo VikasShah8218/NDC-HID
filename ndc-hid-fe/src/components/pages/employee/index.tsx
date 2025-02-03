@@ -53,7 +53,7 @@ const Employee: React.FC = () => {
         if (response.status){setCards(response.data);}
         else{toast.error(response?.detail)}
     }
-   const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
+   const changeField = (event: any) => {
        setFormData((prevFormData) => ({
            ...prevFormData,
            [event.target.name]: event.target.value,

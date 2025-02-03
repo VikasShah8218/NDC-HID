@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthToken } from "./auth";
 import store from "../app/store";
-import { logout, setRequestLoading } from "../app/slices/authSlice";
+import { logout } from "../app/slices/authSlice";
 
 const BASE_URL = "http://localhost:8000";
 
