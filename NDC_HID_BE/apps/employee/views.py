@@ -121,7 +121,7 @@ def validate_event(scp_number:int,card_number:int,acr_number:int):
             "controller":ControllerListSerializer(Controller.objects.get(scp_number=scp_number)).data ,
             "employee":EmployeeEventListSerializer(emp).data, 
             "reader":HIDReaderListSerializer(rea).data,
-            "time":now().isoformat()
+            "time":now().strftime("%d-%m-%Y %I:%M %p")
             }}
         EmployeeLog.objects.create(employee = emp, card = card,reader=rea)
         
