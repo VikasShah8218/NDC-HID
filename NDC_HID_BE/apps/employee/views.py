@@ -11,6 +11,7 @@ from apps.controller.models import Card, HIDReader,Controller
 from django.utils.timezone import now
 from django.http import FileResponse, HttpResponse
 import base64
+import pytz
 import io
 
 
@@ -121,7 +122,7 @@ def validate_event(scp_number:int,card_number:int,acr_number:int):
             "controller":ControllerListSerializer(Controller.objects.get(scp_number=scp_number)).data ,
             "employee":EmployeeEventListSerializer(emp).data, 
             "reader":HIDReaderListSerializer(rea).data,
-            "time":now().strftime("%d-%m-%Y %I:%M %p")
+            "time":now().astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y %I:%M %p")
             }}
         EmployeeLog.objects.create(employee = emp, card = card,reader=rea)
         
