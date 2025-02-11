@@ -64,7 +64,7 @@ class EmployeeLog(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_log") 
     card = models.ForeignKey(Card, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_log_card" ) 
     reader = models.ForeignKey(HIDReader, on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_log_reader" ) 
-    created_on = models.DateTimeField(null=True,blank=True)
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     # active = models.BooleanField(default=True)
 
     

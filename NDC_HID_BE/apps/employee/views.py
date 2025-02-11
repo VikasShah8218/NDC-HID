@@ -129,7 +129,8 @@ def validate_event(scp_number:int,card_number:int,acr_number:int,acc_time:int):
             "reader":HIDReaderListSerializer(rea).data,
             "time":now().astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y %I:%M %p")
             }}
-        EmployeeLog.objects.create(employee = emp, card = card,reader=rea, created_on = make_aware(datetime.fromtimestamp(int(acc_time))))
+        # EmployeeLog.objects.create(employee = emp, card = card,reader=rea, created_on = make_aware(datetime.fromtimestamp(int(acc_time))))
+        EmployeeLog.objects.create(employee = emp, card = card,reader=rea)
         
         # print(data)
         send_message(data)
