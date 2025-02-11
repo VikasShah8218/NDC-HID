@@ -66,11 +66,11 @@ const EventReport: React.FC =  () => {
                 </div>
                 <div className="date-filter">
                     <label htmlFor="start-date">Start Date:</label>
-                    <input type="date" id="start-date" ref={refs.startDate1} name="start-date" />
+                    <input type="datetime-local" id="start-date" ref={refs.startDate1} name="start-date" />
                 </div>
                 <div className="date-filter">
                     <label htmlFor="end-date">End Date:</label>
-                    <input type="date" id="end-date" ref={refs.endDate1} name="end-date" />
+                    <input type="datetime-local" id="end-date" ref={refs.endDate1} name="end-date" />
                 </div>
                 <div className="parm-00">
                     <div className="parm-input">
