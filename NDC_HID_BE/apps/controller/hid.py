@@ -624,10 +624,12 @@ def scp_reply_transaction(message:SCPReplyMessage,SCPID:int):
         
         elif data_status['tran_code'] == 12:
             tran_code = "12 Request granted: full test, not used"
+            validate_event(int(SCPID),int(data["cardholder_id"]),int(message.tran.source_number) if (int(data_status["source_type"])==9) else None, int(message.tran.time))
+
         
         elif data_status['tran_code'] == 13:
             tran_code = "Request granted: Full Test, Used"
-            validate_event(int(SCPID),int(data["cardholder_id"]),int(message.tran.source_number) if (int(data_status["source_type"])==9) else None)
+            validate_event(int(SCPID),int(data["cardholder_id"]),int(message.tran.source_number) if (int(data_status["source_type"])==9) else None, int(message.tran.time))
         
         elif data_status['tran_code'] == 14:
             tran_code = "14 Request denied: never allowed at this reader (all Tz's = 0)"
@@ -1010,7 +1012,7 @@ def priodic_check_status():
                         "name":controller.name
                     })
                     # print(data)
-                    if scp_isAttached and driver_isonline :
+                    if scp_isAttached and driver_isOnline :
                         print("✅ ✅")
                     else:
                         if scp_isAttached:

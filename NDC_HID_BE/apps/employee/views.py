@@ -8,8 +8,10 @@ from ws.utils import send_message
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from apps.controller.models import Card, HIDReader,Controller
-from django.utils.timezone import now
 from django.http import FileResponse, HttpResponse
+from django.utils.timezone import make_aware
+from django.utils.timezone import now
+from datetime import datetime
 import base64
 import pytz
 import io
@@ -113,7 +115,10 @@ def image_pic(request, id):
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
-def validate_event(scp_number:int,card_number:int,acr_number:int):
+def validate_event(scp_number:int,card_number:int,acr_number:int,acc_time:int):
+    print("-"*100)
+    print(acc_time)
+    print("-"*100)
     try:
         card = Card.objects.get(card_number=card_number)
         emp  = Employee.objects.get(active = True,card = card.id)
@@ -124,7 +129,7 @@ def validate_event(scp_number:int,card_number:int,acr_number:int):
             "reader":HIDReaderListSerializer(rea).data,
             "time":now().astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y %I:%M %p")
             }}
-        EmployeeLog.objects.create(employee = emp, card = card,reader=rea)
+        EmployeeLog.objects.create(employee = emp, card = card,reader=rea, created_on = make_aware(datetime.fromtimestamp(int(acc_time))))
         
         # print(data)
         send_message(data)
