@@ -137,7 +137,7 @@ tr:hover{
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    /* margin-top: 20px; */
 }
 
 table, th, td {
@@ -151,7 +151,8 @@ th, td {
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #108bce;
+    color: white;
 }
 
 .image-preview {
@@ -206,4 +207,25 @@ th {
 .form-elements-groups {
     height: 55vh;
     overflow: auto;
+}
+
+.searchField{
+    /* height: 0.5rem; */
+    width: 200px;
+    margin-bottom: 10px;
+    background-color: #eaeaea;
+    color: white;
+    border-radius: 100px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.searchField input{
+    font-family:Arial, Helvetica, sans-serif;
+    background-color: #0d5892;
+    color: white;
+    outline: none;
+    height: 0.5rem;
+    border-radius: 30px !important;
+}
+.searchField input::placeholder{
+    color: rgb(255, 255, 255);
 }

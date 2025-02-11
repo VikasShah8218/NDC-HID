@@ -32,6 +32,7 @@ const Employee: React.FC = () => {
     }
 
     const [employees,setEmployees] = useState<any[]>([]);
+    const [allEmployees,setAllEmployees] = useState<any[]>([]);
     const [departments,setDepartments] = useState<any[]>([]);
     const [cards,setCards] = useState<any[]>([]);
     const [formData, setFormData] = useState({...emptyFormData})
@@ -40,7 +41,7 @@ const Employee: React.FC = () => {
 
     const getEmployees = async()=> {
         const response = await getFromServer("/employee/view");
-        if (response.status){setEmployees(response.data);}
+        if (response.status){setEmployees(response.data);setAllEmployees(response.data);}
         else{toast.error(response?.detail)}
     }
     const getDpartment = async()=> {
@@ -59,7 +60,6 @@ const Employee: React.FC = () => {
            [event.target.name]: event.target.value,
         }));
     }
-   
     const saveData = async() =>{
         let response;
         if (formData.id){ response = await patchToServer(`/employee/view/${formData.id}/`,formData) }
@@ -72,6 +72,10 @@ const Employee: React.FC = () => {
         }
         else{toast.error(response?.data?.detail)}
     }
+    const searchField = (event:any) => {
+        const filteredData = allEmployees.filter((employee) => employee.name.toLowerCase().includes(event.target.value.toLowerCase()));
+        setEmployees(filteredData)
+    }
 
     useEffect(()=>{getEmployees();getCard();getDpartment();},[])
     
@@ -83,10 +87,6 @@ const Employee: React.FC = () => {
                 <h3>Employee Information</h3>
             </div>
             <div className="form-elements-groups">
-            {/* <div className="form-element">
-                <label htmlFor="cardNo">Card No.:</label>
-                <input type="text" id="cardNo" value={formData.card_number} onChange={changeField}/>
-            </div> */}
             <div className="form-element">
                 <label htmlFor="cards">Card:</label>
                 <select id="cards" name="card_id" value={formData.card_id}  onChange={changeField} >
@@ -465,41 +465,44 @@ const Employee: React.FC = () => {
             <button onClick={saveData} > { formData.id?"Save":"Add New" } </button>
             <button>DELETE</button>
         </div>
-        <div style={{flex:"3",paddingLeft:"16px"}} >
-        <div className="emp-table" style={{maxHeight:"80vh", overflow:"auto"}} >
-          <table>
-              <thead>
-                  <tr>
-                      <th>Photo</th>
-                      <th>name</th>
-                      <th>Card</th>
-                      <th>CPF</th>
-                      <th>MOBILE</th>
-                      {/* <th>ADDRESS</th> */}
-                      <th>DOJ</th>
-                      <th>DEPARTMENT</th>
-                      <th>DESIGNATION</th>
-                      {/* <th>Action</th> */}
-                  </tr>
-              </thead>
-              <tbody>
-                {employees?.map((emp, i) =>
-                  <tr  onClick={() => showDetails(i)}>
-                      <td className="table-img" ><img src={ emp?.is_photo?`${BASE_URL}/employee/emp-img/${emp.id}`:EmployeeImage} alt="Photo" width="50" /></td>
-                      <td>{emp.name}</td>
-                      <td>{emp.card_number}</td>
-                      <td>{emp. cpf_no}</td>
-                      <td>{emp.mobile_no}</td>
-                      {/* <td>{emp.address}</td> */}
-                      <td>{emp.dob}</td>
-                      <td>{emp.department_name}</td>
-                      <td>{emp.designation}</td>
-                      {/* <td><button onClick={() => showDetails(i)}>👁️</button></td> */}
-                  </tr>
-                  )}
-              </tbody>
-          </table>
-        </div>
+        <div style={{flex:"3",paddingLeft:"16px"}}>
+            <div className="searchField">
+                <input onChange={searchField} placeholder="Search on Name" type="text" />
+            </div>
+            <div className="emp-table" style={{maxHeight:"78vh", overflow:"auto"}} >
+                <table style={{position:"relative"}}>
+                    <thead style={{position:"sticky",top:"0px"}}>
+                        <tr>
+                            <th>Photo</th>
+                            <th>name</th>
+                            <th>Card</th>
+                            <th>CPF</th>
+                            <th>MOBILE</th>
+                            {/* <th>ADDRESS</th> */}
+                            <th>DOJ</th>
+                            <th>DEPARTMENT</th>
+                            <th>DESIGNATION</th>
+                            {/* <th>Action</th> */}
+                        </tr>
+                    </thead>
+                    <tbody style={{marginTop:"2px"}}>
+                        {employees?.map((emp, i) =>
+                        <tr  onClick={() => showDetails(i)}>
+                            <td className="table-img" ><img src={ emp?.is_photo?`${BASE_URL}/employee/emp-img/${emp.id}`:EmployeeImage} alt="Photo" width="50" /></td>
+                            <td>{emp.name}</td>
+                            <td>{emp.card_number}</td>
+                            <td>{emp. cpf_no}</td>
+                            <td>{emp.mobile_no}</td>
+                            {/* <td>{emp.address}</td> */}
+                            <td>{emp.dob}</td>
+                            <td>{emp.department_name}</td>
+                            <td>{emp.designation}</td>
+                            {/* <td><button onClick={() => showDetails(i)}>👁️</button></td> */}
+                        </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
   );
